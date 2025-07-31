@@ -1,0 +1,7 @@
+.idea
+test_file
+ven
+__pycache__
+
+.coverage
+out.log
