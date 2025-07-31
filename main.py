@@ -1,4 +1,4 @@
-import _io
+from typing import TextIO
 import argparse
 import json
 from datetime import datetime
@@ -63,7 +63,7 @@ class Parser:
 
         return None
 
-    def _parse_file(self, file: _io.TextIOWrapper) -> None:
+    def _parse_file(self, file: TextIO) -> None:
         for line in file:
             if line.strip():
                 self._parse_line(line)
@@ -90,7 +90,7 @@ def valid_date(s_date: str) -> str | None:
 class Report:
     def __init__(self, report: str, force: bool,
                  keywords: list, out_dict: dict,
-                 outfile: _io.TextIOWrapper = None) -> None:
+                 outfile: TextIO = None) -> None:
         self._outfile = outfile
         self._keywords = keywords
         self._report = report
@@ -108,8 +108,9 @@ class Report:
             raise ValueError("Скрипт умеет только вариант отчёта 'average'. Использование других вариантов запрещено.")
 
         body = []
-        for key, value in self._out_dict.items():
-            body.append(list(key) + [value[0], value[1] / value[0]])
+        for key, (cnt, total_rt) in self._out_dict.items():
+            avg = (total_rt / cnt) if cnt else 0.0
+            body.append(list(key) + [cnt, avg])
 
         body = sorted(body, key=lambda x: x[-2], reverse=True)
         headers = self._keywords + ["total", "avg_response_time"]
@@ -133,7 +134,7 @@ def start_program():
     args_parser.add_argument("--keywords", nargs='*', type=str, help="Ключевые поля для анализа")
     args_parser.add_argument("--output", type=argparse.FileType('w'),
                              help="Путь к файлу отчета")
-    args_parser.add_argument('--force', action='store_true', help='Выкидывать ли исключения?')
+    args_parser.add_argument('--force', action='store_true', help='Игнорировать ошибки строк?')
 
     args = args_parser.parse_args()
 
@@ -141,7 +142,7 @@ def start_program():
     print(f"Тип отчёта: {args.report}")
     print(f"Дата выборки логов: {args.date if args.date else 'Не выбрана'}")
     print(f"Ключевые поля для анализа: {', '.join(args.keywords) if args.keywords else 'url'}")
-    print(f"Выкидывать ли исключения?: {'Нет' if args.force else 'Да'}")
+    print(f"Игнорировать ошибки строк: {'Да' if args.force else 'Нет'}")
     print(f"Файл вывода: {args.output.name if args.output else 'Не выбран'}")
 
     parser = Parser(files=args.file, date=args.date,
