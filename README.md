@@ -1,4 +1,5 @@
 Доброго дня.
+
 У вас было самое интересное задание. 
 Ограничений конкретных нет, просто файл, просто вывод.
 Прояви фантазию и логику.
@@ -13,20 +14,25 @@
 - output вывод в файл тоже имеется
 
 Обычный запуск без доп. модификаций
+
 python.exe main.py --file test_file/example1.log test_file/example2.log --report average 
 ![file list + report average.png](images/file%20list%20%2B%20report%20average.png)
 
 Передано 2 ключевых слова
+
 python.exe main.py --file test_file/example1.log --report average --keywords url status 
 ![file list keywords list report average.png](images/file%20list%20keywords%20list%20report%20average.png)
 
 Передано 2 ключевых слова, фильтрация по дате + модификатор force
+
 python.exe main.py --file test_file/example1.log test_file/example2.log --report average --date 2025-06-22 --keywords url status --force
 ![file list keywords list report average + date + force.png](images/file%20list%20keywords%20list%20report%20average%20%2B%20date%20%2B%20force.png)
 
 Передача сломанного JSON
+
 python.exe main.py --file test_file/bad.log --report average 
 ![error.png](images/error.png)
+
 python.exe main.py --file test_file/bad.log --report average --force 
 ![error + force.png](images/error%20%2B%20force.png)
 
